@@ -6,17 +6,15 @@ module Conversion
       p 'put amount'
       @amount = gets.chomp.to_i
       p 'put currency sending'
-      @currency1 = gets.chomp.to_i
+      @currency1 = gets.chomp
       p 'put currecy to receive'
-      @currency2 = gets.chomp.to_i
+      @currency2 = gets.chomp
       @usdbtc = 8900
       @copbtc = 30769230
     end
 
-    private
-
     def perform1
-      case currency1
+      case @currency1
       when 'usd'
         btc = @amount/@usdbtc
       when 'cop'
@@ -24,39 +22,46 @@ module Conversion
       when 'btc'
         btc = @amount
       end
+      return btc
     end
 
     def perform2(btc)
-      case currency2
+      case @currency2
       when 'usd'
-        usd = btc*usdbtc
+        return usd = btc*usdbtc
       when 'cop'
-        cop = btc*copbtc
+        return cop = btc*copbtc
       when 'btc'
-        btc
+        return btc
       end
     end
-
   end
-  
+
 
 end
 
 class Currency
   include Conversion
-  attr_accessor :usdbtc
-  attr_accessor :copbtc
-  def initialize (usdbtc, copbtc)
-    @usdbtc, @copbtc = usdbtc, copbtc
+  attr_accessor :usdbtc, :copbtc, :currency1, :currency2, :perform1
+  def initialize (convertion = Conv.new)
+    @usdbtc, @copbtc, @currency1, @currency2 = convertion.usdbtc, convertion.copbtc, convertion.currency1, convertion.currency2
+    @perform1 = convertion.perform1
+    @perform2 = convertion.perform2(@perform1)
+  end
+  def test
+    @perform1
+    @perform2
+    # puts "------------------"
+    # puts convertion.perform2(100)
   end
 end
 
 
-hoy = Currency.new(8900,30769230)
+hoy = Currency.new()
 
-p hoy.usdbtc
-p hoy.copbtc
-
-hoy.convert
-
-p hoy.perform1(1,2)
+p hoy.test
+# p hoy.copbtc
+#
+# hoy.convert
+#
+# p hoy.perform1(1,2)
